@@ -832,4 +832,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
     this.mailEditionViews.push(mail);
   }
+
+
+  getEventValue($event:any) :string {
+    return $event.target.value;
+  }
 }
