@@ -1,3 +1,4 @@
 - [ ] docker image to deploy everything with a clean docker volume
 - [ ] support the definition of configuration through env variable when starting the application
 - [ ] properly integrate idle protocol with web socket to manage notification
+- [ ] rework on the ICS
