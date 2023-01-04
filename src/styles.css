@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+.p-tabview .p-tabview-panels {
+  padding: 0.5rem;
+}
+.p-panel .p-panel-content {
+  padding: 0rem;
+
+}
+
+.p-panel .p-panel-header{
+  padding: 0.5rem;
+
+}
+
+.p-dataview .p-dataview-header{
+  padding: 0.5rem;
+
+}
+.p-autocomplete{
+  width: 100%;
+}

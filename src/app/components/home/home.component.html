@@ -1,0 +1,216 @@
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+<p-contextMenu #cm [model]="items2!" [global]=false></p-contextMenu>
+
+<p-tabView (onClose)="handleTabExit($event)">
+  <p-tabPanel [header]="'Main'" [selected]="true" [closable]="false" >
+
+      <ng-template pTemplate="header"><span (contextmenu)="showContext($event)">Main</span></ng-template>
+    <div class="grid grid-nogutter  p-0">
+      <div class="col-2">
+        <p-button (click)="display = true" icon="fa fa-chevron-right" label="Show Folders"
+          pTooltip="Select the current folder" tooltipPosition="right"></p-button>
+      </div>
+      <div class="col-2">
+        <div class="p-inputgroup">
+          <span style="padding:2px 5px;border-radius:10px 10px;"> All threads:</span>
+          <p-inputSwitch  [(ngModel)]="allThread"
+            pTooltip="Include all mails of a thread when showing thread" tooltipPosition="bottom"></p-inputSwitch>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="grid">
+          <p-autoComplete class="col-12 flex-grow-1"   [inputStyleClass]="'flex flex-grow-1'" placeholder="Query" [(ngModel)]="query" (keydown)="checkEnter($event)"
+            [suggestions]="resultresearch" (completeMethod)="searchquery($event)"
+            pTooltip="query language for notmuch (see notmuch documentation)" tooltipPosition="bottom"
+            showTransitionOptions="20ms ease-out"></p-autoComplete>
+        </div>
+      </div>
+      <div class="col-1" style="text-align:center">
+        <button pButton type="button" label="Search" (click)="doQuery()"></button>
+      </div>
+      <div class="col-2" style="text-align:right">
+          <span style="padding:2px 5px;border-radius:10px 10px;"> Spam and Trash:</span>
+          <p-inputSwitch [(ngModel)]="showSpamTrash"
+            pTooltip="Include deleted and spam messages in search query" tooltipPosition="bottom"></p-inputSwitch>
+      </div>
+
+    </div>
+
+
+    <p-sidebar [(visible)]="display">
+      <p-tree [value]="filesTree2!" selectionMode="single" [(selection)]="selectedFile"
+        (onNodeSelect)="nodeSelect($event)">
+      </p-tree>
+    </p-sidebar>
+
+
+      <p-panel>
+        <ng-template pTemplate="header">
+            <div class="col-12 p-0">
+              <div class="grid grid-nogutter p-0">
+
+                <div class="col-2  p-0"  >
+                  <p-splitButton label="all" icon="far fa-check-square" [model]="messageAction!" (onClick)="selectAll()">
+                  </p-splitButton>
+                </div>
+
+                <div class="col-4" >
+                  <p-button icon="pi pi-trash" [disabled]="selectedThreads.length===0" (click)="delete()"
+                    pTooltip="Send selected thread(s) to trash" tooltipPosition="bottom"></p-button>
+                  <p-button icon="fa fa-archive" [disabled]="selectedThreads.length===0" (click)="archive()"
+                    pTooltip="Archive selected thread(s)" tooltipPosition="bottom"></p-button>
+                  <p-button icon="fa fa-pastafarianism" [disabled]="selectedThreads.length===0" (click)="spam()"
+                    pTooltip="Declare selected thread(s) as spam" tooltipPosition="bottom"></p-button>
+                  <p-button label="Mark as read" [disabled]="selectedThreads.length===0" (click)="markAsRead()"
+                    pTooltip="Mark selected thread(s) as read" tooltipPosition="bottom"></p-button>
+                </div>
+
+                <div class="col-2" >
+                  <p-button icon="fa fa-sync" (click)="update()" pTooltip="check new mail in notmuch database"
+                    tooltipPosition="bottom"></p-button>
+                  <p-splitButton label="Extra" icon="pi pi-file" [disabled]="selectedThreads.length===0" [model]="extras!">
+                  </p-splitButton>
+                </div>
+                <div class="col-2" >
+                  <input [(ngModel)]="selectmatch" type="text" pInputText placeholder="Select matched"
+                    (keydown)="selectMatched($event,selectmatch)" pTooltip="Select threads that match"
+                    tooltipPosition="bottom">
+                </div>
+                <div class="col-2" style="text-align:right">
+                  {{fromMessage}}-{{toMessage}} of {{nbThreads}}
+                  <!--            <p-button icon="fa fa-chevron-left"></p-button>
+              <p-button icon="fa fa-chevron-right"></p-button>-->
+                </div>
+              </div>
+              </div>
+        </ng-template>
+
+        <p-dataView #dv [value]="threads" [paginator]="true" [rows]="50" paginatorPosition="both" filterBy="authors"
+          [sortField]="sortField!" [sortOrder]="sortOrder!" [lazy]="true" (onLazyLoad)="loadThread($event)"
+          [totalRecords]="nbThreads">
+          <p-header>
+              <div class="grid">
+                <div class="col-4">
+                    <input type="search" pInputText placeholder="Filter by authors">
+              </div>
+                    <!--(keyup)="dv.filter($event.target.name)"--><!--CHECK-->
+                  <div class="col-4">
+                    <!--  <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By" (onChange)="onSortChange($event)"
+                  [style]="{'min-width':'140px'}"></p-dropdown>-->
+                  </div>
+                <div class="col-4" style="text-align:right">
+                  <button pButton type="button" label="New Message" (click)="newMail()"></button>
+
+                  <!--<p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
+
+              </div>
+            </div>
+          </p-header>
+          <ng-template let-thread pTemplate="listItem">
+              <div class="col-1" style="text-align:center">
+                <p-checkbox [(ngModel)]="thread.selected" (onChange)="toggleSelection($event, thread)" [binary]="true">
+                </p-checkbox>
+              </div>
+              <div class="col-1" style="text-align:center">
+                <span *ngIf="thread.tags?.includes('flagged') ; else unstar" (click)="markAsUnstarredWithId(thread)"
+                  class="rating-icon pi pi-star" ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star"
+                  pTooltip="flagged this thread" tooltipPosition="bottom"></span>
+                <ng-template #unstar>
+                  <span (click)="markAsStarWithId(thread)" class="rating-icon pi pi-star-o"
+                    ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star" pTooltip="unflagged this thread"
+                    tooltipPosition="bottom"></span>
+                </ng-template>
+                <span>&nbsp;</span>
+                <span *ngIf="thread.tags?.includes('todo') ; else untodo" (click)="markAsUntodoWithId(thread)"
+                  class="rating-icon pi pi-calendar-minus" ng-reflect-klass="rating-icon"
+                  ng-reflect-ng-class="pi pi-star" pTooltip="Remove todo tag on this thread"
+                  tooltipPosition="bottom"></span>
+                <ng-template #untodo>
+                  <span (click)="markAsTodoWithId(thread)" class="rating-icon pi pi-calendar-plus"
+                    ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star"
+                    pTooltip="Declare this thread as todo" tooltipPosition="bottom"></span>
+                </ng-template>
+                <span>&nbsp;</span>
+                <span (click)="deleteWithId(thread)" class="rating-icon pi pi-trash"
+                  ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star" pTooltip="Delete this thread"
+                  tooltipPosition="bottom"></span>
+              </div>
+              <div class="col-1" [style.font-weight]="isRead(thread)" [style.color]="getColorThread(thread)">
+                {{thread.matched}}/{{thread.total}}
+              </div>
+              <div  class="col-2" [style.font-weight]="isRead(thread)"
+                [style.color]="getColorThread(thread)">
+                {{thread.authors}}
+              </div>
+              <div class="col-5" [style.font-weight]="isRead(thread)"
+                [style.color]="getColorThread(thread)">
+                <span style="background-color:#ddd;padding:2px 5px;border-radius:10px 10px;"
+                  *ngFor="let tag of thread.tags | tagfilter">{{tag}}</span>{{thread.subject}}
+              </div>
+              <div class="col-1" [style.font-weight]="isRead(thread)" [style.color]="getColorThread(thread)">
+                {{thread.date_relative}}
+              </div>
+
+              <div class="col-1 search-icon" style="text-align:center">
+                <button pButton type="button" icon="pi pi-search" (click)="selectThread($event, thread)"
+                  pTooltip="Show this thread" tooltipPosition="bottom"></button>
+              </div>
+          </ng-template>
+          <!--      <ng-template let-thread pTemplate="gridItem">
+        <div style="padding:.5em" class="g-12 md-3">
+          <p-panel [header]="thread.vin" [style]="{'text-align':'center'}">
+            <div class="car-detail">{{thread.year}} - {{thread.color}}</div>
+            <hr class="widget-content" style="border-top:0">
+            <button pButton type="button" icon="pi pi-search" (click)="selectThread($event, thread)" style="margin-top:0"></button>
+          </p-panel>
+        </div>
+      </ng-template>-->
+        </p-dataView>
+        <!--[header]="selectedThread?.subject"-->
+
+      </p-panel>
+
+
+
+
+    <p-dialog header="Add tag" [(visible)]="addtagvalue">
+      <div class="p-inputgroup">
+        <input autofocus type="text" [(ngModel)]="tag" pInputText placeholder="Tag (separated using space)">
+        <button pButton type="button" icon="pi pi-check" class="button-success" (click)="addTag()"></button>
+      </div>
+    </p-dialog>
+
+
+  </p-tabPanel>
+    <p-tabPanel [header]="item?.subject!" *ngFor="let item of selectedThreadsView; let i = index"
+    [selected]="getSelected(item)"
+    [closable]="true"
+    [style]="{width: '100vw', height: '100vh', 'max-height':'100vh' , 'max-width':'100vw'}">
+    <ng-template pTemplate="header"><span (contextmenu)="showContext($event)">{{item?.subject}}</span></ng-template>
+
+    <app-readthread
+    (initMailView)="editMail($event)"
+
+    [selectedThread]="item"
+    [showAllThread]="allThread"
+    ></app-readthread>
+  </p-tabPanel>
+
+  <p-tabPanel [header]="'Edit: '+ mail?.subject" *ngFor="let mail of mailEditionViews; let k = index"
+  [selected]="getSelectedMail(mail)"
+  [closable]="true"
+
+
+  [style]="{width: '100vw', height: '100vh', 'max-height':'100vh' , 'max-width':'100vw'}">
+  <ng-template pTemplate="header"><span (contextmenu)="showContext($event)">Edit: {{mail?.subject}}</span></ng-template>
+
+  <app-mailedition
+  (cancelMailView)="cancelMail($event)"
+  [mailEdition]="mail"
+  [config]="config"
+  ></app-mailedition>
+</p-tabPanel>
+
+</p-tabView>
