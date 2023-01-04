@@ -89,7 +89,6 @@ export class MaileditionComponent implements OnInit, AfterViewInit, AfterViewChe
 
   myUploader(event: any, upload: any) {
     for (const file of event.files) {
-      console.error(file);
       if (!this.mailEdition!.uploadedFiles.includes(file)) {
         this.mailEdition!.uploadedFiles.push(file);
         const reader = new FileReader();
@@ -110,7 +109,6 @@ export class MaileditionComponent implements OnInit, AfterViewInit, AfterViewChe
 
 
   deleteAttachement(file: any) {
-    console.log(file)
     this.mailEdition!.uploadedFiles = this.mailEdition!.uploadedFiles.filter(item => item !== file);
     this.mailEdition!.uploadFilesMap.delete(file.name);
   }
@@ -286,9 +284,7 @@ export class MaileditionComponent implements OnInit, AfterViewInit, AfterViewChe
         if (email.includes('<')) {
           emailcheck = email.slice(email.indexOf('<') + 1, email.indexOf('>')).trim();
         }
-        console.log(emailcheck);
         validadress = validadress && re.test(emailcheck);
-        console.log(validadress);
       });
     }
     if (this.mailEdition!.ccs.length > 0) {
@@ -298,9 +294,7 @@ export class MaileditionComponent implements OnInit, AfterViewInit, AfterViewChe
         if (email.includes('<')) {
           emailcheck = email.slice(email.indexOf('<') + 1, email.indexOf('>')).trim();
         }
-        console.log(emailcheck);
         validadress = validadress && re.test(emailcheck);
-        console.log(validadress);
       });
     }
     if (this.mailEdition!.bccs.length > 0) {
@@ -310,9 +304,7 @@ export class MaileditionComponent implements OnInit, AfterViewInit, AfterViewChe
         if (email.includes('<')) {
           emailcheck = email.slice(email.indexOf('<') + 1, email.indexOf('>')).trim();
         }
-        console.log(emailcheck);
         validadress = validadress && re.test(emailcheck);
-        console.log(validadress);
       });
     }
     if (validadress) {

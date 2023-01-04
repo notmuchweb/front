@@ -25,6 +25,7 @@ export interface INotMuchService{
   replyAll(messageid: string): Observable<MailVM> ;
   download(messageid: string, partid:number):Observable<FileContentDTO>;
   getConfig():Observable<NotMuchConfig>;
+  getDirectories():Observable<string[]>;
 }
 
 @Injectable({
@@ -105,7 +106,6 @@ export class NotMuchService implements INotMuchService {
   }
   sendMail(sender: string, to: string, cc: string, bcc: string, subject: string, html: string, files: Map<FileDTO, string | ArrayBuffer | AttachmentForward | AttachmentICSForward>, isDraft: boolean, mailreference: string, mailinReplyTo: string): Observable<boolean> {
     let mySerialMap = JSON.stringify(Array.from(files.entries()))
-     console.log(mySerialMap)
     return this.http.post<boolean>('/api/sendMail',  {
         sender: sender, to: to, cc: cc, bcc: bcc, subject: subject, html: html, files: mySerialMap, isDraft: isDraft, mailreference: mailreference,
         mailinReplyTo: mailinReplyTo
@@ -159,5 +159,7 @@ export class NotMuchService implements INotMuchService {
   getConfig():Observable<NotMuchConfig>{
     return this.http.get<NotMuchConfig>('/api/getConfig') ;
   }
-
+  getDirectories():Observable<string[]>{
+    return this.http.get<string[]>('/api/getDirectories') ;
+  }
 }

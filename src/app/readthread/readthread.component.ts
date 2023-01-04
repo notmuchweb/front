@@ -71,7 +71,6 @@ export class ReadthreadComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    console.error(esPath(['one', 2, {three: 3}], '//object')) // {three: 3}
 
     this.notmuchService.getFroms().subscribe(e=> {
            this.froms = e;
@@ -184,7 +183,6 @@ export class ReadthreadComponent implements OnInit {
               mailadress = mailadress + mailadrr;
             } else {
               mailEdition.tos.push(mailadrr);
-              console.log('ok');
             }
           } else {
             if (mailadresswithcomma) {
@@ -233,7 +231,6 @@ export class ReadthreadComponent implements OnInit {
               mailadress = mailadress + mailadrr;
             } else {
               mailEdition.tos.push(mailadrr);
-              console.log('ok');
             }
           } else {
             if (mailadresswithcomma) {
@@ -264,7 +261,6 @@ export class ReadthreadComponent implements OnInit {
               mailadress = mailadress + mailadrr + ', ';
             } else {
               mailEdition.ccs.push(mailadrr);
-              console.log('ok');
             }
           } else {
             if (mailadresswithcomma) {

@@ -51,29 +51,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   sortField?: string;
   sortOrder?: number;
 
-  // selectedThread: Thread;
-
-  // viewmaildetail: boolean;
   selectmatch = '';
   tag = '';
   addtagvalue?: boolean;
   config ?: NotMuchConfig;
-  // tabindex = 0;
-  /*  from = '';
-  tos = [];
-  ccs = [];
-  bccs = [];
-  subject = '';
-  mailbody = '';
-  uploadedFiles: any[] = [];
-  uploadFilesMap: Map<any, any> = new Map();
-  mailreference: string;
-  mailinReplyTo: string;*/
-
-  // Code completion
-  //  resultsto: string[];
-  //  resultscc: string[];
-  //  resultsbcc: string[];
 
   // Code completion
   resultresearch: any[] = [];
@@ -89,11 +70,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   interval:any;
 
-  //  Spell check
- /* electronSpellchecker;
-  SpellCheckHandler;
-  ContextMenuListener;
-  ContextMenuBuilder; */
 
   items2?: MenuItem[];
   @ViewChild('cm') cm?: ContextMenu;
@@ -111,12 +87,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private _hotkeysService: HotkeysService,
     private sanitizer: DomSanitizer
   ) {
-   /* if (this.isElectron()) {
-      this.electronSpellchecker = window.require('electron-spellchecker');
-      this.SpellCheckHandler = this.electronSpellchecker.SpellCheckHandler;
-      this.ContextMenuListener = this.electronSpellchecker.ContextMenuListener;
-      this.ContextMenuBuilder = this.electronSpellchecker.ContextMenuBuilder;
-    } */
   }
 
   closeAllTabs() {
@@ -183,7 +153,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.filesTree2 = e;
     })  ;
     this.notmuchService.getThread(this.query, 0, 50, this.showSpamTrash).subscribe((th:any) => {
-      // this.threads.concat(th);
       this.threads = [...th];
     });
 
@@ -400,11 +369,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       );
 
       // TODO
-      /* const res = this.notmuchService.getDirectories(
-        this.notmuchService.localmailfolder
-      );
+     this.notmuchService.getDirectories().subscribe(res => {;
       let filter = tag;
-      if (this.notmuchService.localmailfoldermultiaccounts) {
+      if (this.config!.localmailfoldermultiaccounts) {
         filter = filter.replace('/', '.');
       }
       this.resultresearch = [];
@@ -412,7 +379,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         .filter((d) => d.startsWith(filter))
         .forEach((d) => {
           let dfilter = d;
-          if (this.notmuchService.localmailfoldermultiaccounts) {
+          if (this.config!.localmailfoldermultiaccounts) {
             dfilter = dfilter.replace('.', '/');
           }
           this.resultresearch.push(
@@ -421,7 +388,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               '/**'
           );
         });
-        */
+      })
     }
 
     if (terms[terms.length - 1].startsWith('-tag:')) {
@@ -652,13 +619,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   nodeSelect(event:any) {
 
-    // TODO
-  //  if (this.notmuchService.localmailfoldermultiaccounts) {
+    if (this.config && this.config!.localmailfoldermultiaccounts) {
       this.query =
         'path:' + this.getParent(event.node).replace('.', '/') + '/**';
-   /* } else {
+    } else {
       this.query = 'path:' + this.getParent(event.node) + '/**';
-    }*/
+    }
     this.display = false;
     this.fromMessage = 1;
     this.toMessage = 50;
@@ -685,7 +651,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       if (t.header === thread.subject) {
         t.selected = true;
       }
-      console.log(t);
     }
     if (!this.selectedThreadsView.some((t) => t === thread)) {
       this.selectedThreadsView.push(thread);
@@ -811,7 +776,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   handleTabChange(e:any) {
     const index = e.index;
-    //  console.log(e);
   }
 
   handleTabExit(e:any) {
@@ -858,7 +822,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   editMail(mail: MailEdition) {
-    //      console.log('edit mail');
     for (const t of this.tabView!.tabs) {
       if (t.selected) {
         t.selected = false;
