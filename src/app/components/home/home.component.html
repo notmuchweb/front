@@ -89,7 +89,7 @@
 
         <p-dataView #dv [value]="threads" [paginator]="true" [rows]="50" paginatorPosition="both" filterBy="authors"
           [sortField]="sortField!" [sortOrder]="sortOrder!" [lazy]="true" (onLazyLoad)="loadThread($event)"
-          [totalRecords]="nbThreads">
+          [totalRecords]="nbThreads" [first]="firstPage">
           <p-header>
               <div class="grid">
                 <div class="col-4">

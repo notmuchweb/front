@@ -32,6 +32,7 @@ import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild(TabView) tabView?: TabView;
+  @ViewChild('dv') dv?:any ;
 
   faCheckSquare = faCheckSquare;
   //  froms: SelectItem[];
@@ -69,7 +70,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   elem:any;
 
   interval:any;
-
+  firstPage = 0;
 
   items2?: MenuItem[];
   @ViewChild('cm') cm?: ContextMenu;
@@ -125,6 +126,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.display = false;
           this.fromMessage = 1;
           this.toMessage = 50;
+          this.firstPage = 0;
+          this.dv.first =0;
+
+
           this.update();
           return false;
         }));
@@ -631,6 +636,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.display = false;
     this.fromMessage = 1;
     this.toMessage = 50;
+    this.firstPage = 0;
+    this.dv.first =0;
     this.update();
   }
 
@@ -666,6 +673,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.display = false;
     this.fromMessage = 1;
     this.toMessage = 50;
+    this.firstPage = 0;
+    this.dv.first =0;
+
+
     this.update();
   }
 
@@ -758,6 +769,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   checkEnter(event:any) {
     if (event.keyCode === 13) {
+      this.fromMessage = 1;
+      this.toMessage = 50;
+      this.firstPage = 0;
+      this.dv.first =0;
+
+
       this.update();
     }
   }
