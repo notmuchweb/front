@@ -115,11 +115,11 @@
               </div>
               <div class="col-1" style="text-align:center">
                 <span *ngIf="thread.tags?.includes('flagged') ; else unstar" (click)="markAsUnstarredWithId(thread)"
-                  class="rating-icon pi pi-star" ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star"
-                  pTooltip="flagged this thread" tooltipPosition="bottom"></span>
+                  class="rating-icon pi pi-star-fill" ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star"
+                  pTooltip="unflagged this thread" tooltipPosition="bottom"></span>
                 <ng-template #unstar>
-                  <span (click)="markAsStarWithId(thread)" class="rating-icon pi pi-star-o"
-                    ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star" pTooltip="unflagged this thread"
+                  <span (click)="markAsStarWithId(thread)" class="rating-icon pi pi-star"
+                    ng-reflect-klass="rating-icon" ng-reflect-ng-class="pi pi-star" pTooltip="flagged this thread"
                     tooltipPosition="bottom"></span>
                 </ng-template>
                 <span>&nbsp;</span>

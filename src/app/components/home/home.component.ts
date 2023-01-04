@@ -500,7 +500,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   markAsRead() {
     if (this.selectedThreads.length > 0) {
-      this.notmuchService.removeTag(this.selectedThreads, 'unread');
+      this.notmuchService.removeTag(this.selectedThreads, 'unread').subscribe(t1 => {
+
       this.threads.forEach((t) => {
         if (this.selectedThreads.includes('thread:' + t.thread)) {
           const index = t.tags.indexOf('unread');
@@ -509,6 +510,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }
         }
       });
+    });
+
     }
   }
 
