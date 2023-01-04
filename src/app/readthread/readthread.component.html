@@ -57,9 +57,9 @@
                     <button *ngIf="message?.tags?.includes('unread')" label="Unread" pButton type="button"
                       class="ui-button-rounded ui-button-danger"></button>
                     <BR>
-                    <div class="ui-fluid" *ngFor="let attach of message.attachments">
+                    <div class="" *ngFor="let attach of message.attachments">
                       <button style="padding: -1px;border: 2px; overflow: hidden;" pButton type="button"
-                        class="ui-button-raised ui-button-warning" [label]="attach.name"
+                        class="ui-button-raised ui-button-warning overflow-hidden" [label]="attach.name"
                         (click)="showSaveDialog($event, attach.name,attach.messageid, attach.partid)"></button>
                     </div>
 
@@ -86,26 +86,28 @@
   [style]="{width: '100vw', height: '100vh', 'max-height':'100vh' , 'max-width':'100vw'}"
   [contentStyle]="{'width':'100vw',  'height': '100vh', 'max-height':'90vh' , 'max-width':'100vw'}">
 
-  <div class="grid justify-between">
-    <div class="col col-align-stretch" style="text-align: center; align-content: center; align-items: center">
+  <div class="grid">
+    <div class="col-12" style="text-align: center; align-content: center; align-items: center">
       <h3>Title</h3>
-      <input type="text" pInputText [readOnly]=true [(ngModel)]="icstitre">
-      <BR>
-      <h3>Starting date </h3>
-      <p-calendar [(ngModel)]="icsdate" [inline]="true" [required]=true [locale]="enCalendar" dateFormat="dd/mm/yy">
+      <input type="text" pInputText [readOnly]=true [(ngModel)]="icstitre" style="width: '100%';">
+      </div>
+      <div class="col-4" style="text-align: center; align-content: center; align-items: center">
+        <h3>Starting date </h3>
+      <p-calendar [(ngModel)]="icsdate" [inline]="true" [required]=true [locale]="enCalendar" dateFormat="dd/mm/yy" [style]="{'width':'450px'}">
       </p-calendar>
     </div>
-    <div class="p-col p-col-align-stretch" style="text-align: center; align-content: center; align-items: center">
+    <div class="col-4" style="text-align: center; align-content: center; align-items: center">
       <h3>Starting time </h3>
-      <p-calendar [(ngModel)]="icstime" [timeOnly]="true" [inline]="true" [required]=true></p-calendar>
-      <BR>
-      <h3>Duration: {{icsduraction}}</h3>
+      <p-calendar [(ngModel)]="icstime" [timeOnly]="true" [inline]="true" [required]=true [style]="{'width':'300px'}"></p-calendar>
+</div>
+<div class="col-4" style="text-align: center; align-content: center; align-items: center">
+  <h3>Duration: {{icsduraction}}</h3>
       <p-slider [disabled]="icsallday" [(ngModel)]="icsduraction" [step]="15" [min]="15" [max]="240"></p-slider>
       <BR>
       <h3>All day: {{icsallday}}</h3>
       <p-checkbox [(ngModel)]="icsallday" [binary]="true"></p-checkbox>
     </div>
-    <div class="col col-align-end" style="text-align: right; align-content: right; align-items: right">
+    <div class="col-12" style="text-align: right; align-content: right; align-items: right">
       <button pButton type="button" label="SendICS" (click)="sendICS()"></button>
     </div>
   </div>
